@@ -1,0 +1,104 @@
+function renderAnnouncements(){
+var container=$('announcements');
+var m3=members.length>2?members[2].fullName:'un membre';
+var items=[
+{icon:'📅',color:'var(--primary)',title:'Congrès annuel 2026',desc:'Le prochain congrès se tiendra du 15 au 17 août 2026 à Abidjan. Réservez vos dates !',date:'Il y a 2 jours'},
+{icon:'🏠',color:'var(--success)',title:'Projet maison familiale',desc:'La campagne de financement avance bien. Merci à tous les contributeurs.',date:'Il y a 5 jours'},
+{icon:'❤️',color:'var(--danger)',title:'Naissance dans la famille',desc:"Félicitations à "+m3+" pour l'arrivée de son petit-fils !",date:'Il y a 1 semaine'}
+];
+var html='';
+for(var i=0;i<items.length;i++){
+var item=items[i];
+html+='<div class=\"event-card\" style=\"border-left-color:'+item.color+'\">'+
+'<div style=\"min-width:44px;text-align:center;font-size:1.4rem\">'+item.icon+'</div>'+
+'<div style=\"flex:1\">'+
+'<h3 style=\"margin-bottom:5px;color:var(--primary);font-size:0.95rem\">'+item.title+'</h3>'+
+'<p style=\"color:var(--text-light);font-size:0.82rem;margin-bottom:6px\">'+item.desc+'</p>'+
+'<span style=\"font-size:0.72rem;color:var(--text-light)\">🕐 '+item.date+'</span>'+
+'</div>'+
+'</div>'
+}
+container.innerHTML=html
+}
+function renderEvents(){
+var container=$('events-list');
+var events=[
+{day:'15',month:'Août',title:'Congrès Annuel Mamguegho 2026',desc:'Assemblée générale, élections et cérémonie de remise des prix.',loc:"Abidjan, Côte d'Ivoire",time:'09:00 - 18:00'},
+{day:'24',month:'Déc',title:"Réunion de fin d'année",desc:"Bilan annuel et célébrations de fin d'année en famille.",loc:'En ligne (Téléconférence)',time:'20:00 - 22:00'},
+{day:'01',month:'Jan',title:'Journée de solidarité',desc:'Visite des aînés et distribution de dons aux familles dans le besoin.',loc:'Divers lieux',time:'Toute la journée'}
+];
+var html='';
+for(var i=0;i<events.length;i++){
+var e=events[i];
+html+='<div class=\"event-card\">'+
+'<div class=\"event-date\"><div class=\"day\">'+e.day+'</div><div class=\"month\">'+e.month+'</div></div>'+
+'<div class=\"event-info\">'+
+'<h3>'+e.title+'</h3>'+
+'<p>'+e.desc+'</p>'+
+'<div class=\"meta\"><span>📍 '+e.loc+'</span><span>🕐 '+e.time+'</span></div>'+
+'</div>'+
+'</div>'
+}
+container.innerHTML=html
+}
+function renderContributions(){
+var tbody=$('contrib-body');
+var shuffled=members.slice().sort(function(){return Math.random()-0.5}).slice(0,8);
+var amounts=[500,750,1000,1250,1500,2000,3000,5000];
+var html='';
+for(var i=0;i<shuffled.length;i++){
+var m=shuffled[i];
+var amt=amounts[i%amounts.length];
+var paid=Math.random()>0.3;
+var day=Math.floor(Math.random()*28+1);
+var month=Math.floor(Math.random()*12+1);
+html+='<tr>'+
+'<td style=\"display:flex;align-items:center;gap:8px\"><img src=\"'+m.avatar+'\" style=\"width:28px;height:28px;border-radius:50%\"><span style=\"font-weight:600;font-size:0.82rem\">'+m.fullName+'</span></td>'+
+'<td class=\"amount\">'+amt.toLocaleString()+' €</td>'+
+'<td>'+day+'/'+month+'/2026</td>'+
+'<td><span class=\"status '+(paid?'status-paid':'status-pending')+'\">'+(paid?'✅ Payé':'⏳ En attente')+'</span></td>'+
+'</tr>'
+}
+tbody.innerHTML=html
+}
+function renderProjects(){
+var kanban=$('kanban');
+function colHtml(title,icon,cls,tasks){
+var h='<div class=\"kanban-col kanban-col-'+cls+'\">'+
+'<h3>'+icon+' '+title+'</h3>';
+for(var i=0;i<tasks.length;i++){
+var t=tasks[i];
+h+='<div class=\"task-card\">'+
+'<h4>'+t.t+'</h4>'+
+'<p>'+t.d+'</p>'+
+'<div class=\"task-meta\">'+
+'<span class=\"task-tag\">'+t.tag+'</span>'+
+'<div class=\"task-avatars\">';
+for(var j=0;j<t.mem.length;j++){
+h+='<img src=\"'+members[t.mem[j]%members.length].avatar+'\" alt=\"\">'
+}
+h+='</div></div></div>'
+}
+h+='</div>';
+return h
+}
+var todo=[
+{t:'Achat du terrain familial',d:"Identification et acquisition du terrain pour la maison familiale.",tag:'🔴 Urgent',mem:[0,1,2]},
+{t:'Création du fonds scolaire',d:"Mise en place d'une bourse pour les étudiants de la famille.",tag:'🟠 Important',mem:[3,4]}
+];
+var progress=[
+{t:'Construction maison familiale',d:'Première phase : fondations et gros œuvre.',tag:'🟡 En cours',mem:[0,2,5]},
+{t:'Site web familial',d:"Développement de l'espace numérique Mamguegho.",tag:'🟡 En cours',mem:[1,3]},
+{t:'Fonds de santé',d:'Cotisation pour les urgences médicales.',tag:'🟡 En cours',mem:[4,6]}
+];
+var done=[
+{t:'Congrès 2025',d:'Organisation et tenue du congrès annuel.',tag:'🟢 Terminé',mem:[0,1,2,3]},
+{t:'Annuaire papier',d:"Édition et distribution de l'annuaire familial.",tag:'🟢 Terminé',mem:[5,7]}
+];
+kanban.innerHTML=colHtml('À faire','📋','todo',todo)+
+colHtml('En cours','🔄','progress',progress)+
+colHtml('Terminé','✅','done',done)
+}
+</script>
+</body>
+</html>
